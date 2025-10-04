@@ -1,0 +1,25 @@
+{
+  "name": "sbi-portfolio-tracker",
+  "version": "1.0.0",
+  "description": "sbi証券をmcpサーバーとして使いたい",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koba-lab/sbi-portfolio-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/koba-lab/sbi-portfolio-tracker/issues"
+  },
+  "homepage": "https://github.com/koba-lab/sbi-portfolio-tracker#readme",
+  "devDependencies": {
+    "@types/node": "^24.6.2",
+    "playwright": "^1.55.1"
+  }
+}

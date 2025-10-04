@@ -1,0 +1,64 @@
+{
+  "name": "SBI Portfolio Tracker (Deno)",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "denoland.vscode-deno",
+        "anthropic.claude-code",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "deno.enable": true,
+        "deno.lint": true,
+        "deno.unstable": false,
+        "deno.path": "/usr/local/bin/deno",
+        "editor.defaultFormatter": "denoland.vscode-deno",
+        "editor.formatOnSave": true,
+        "[typescript]": {
+          "editor.defaultFormatter": "denoland.vscode-deno"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "denoland.vscode-deno"
+        }
+      }
+    }
+  },
+
+  "initializeCommand": "bash .devcontainer/init.sh",
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+
+  "portsAttributes": {
+    "8000": {
+      "label": "Application",
+      "onAutoForward": "notify"
+    }
+  },
+
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
+
+  "runArgs": ["--env-file", ".env"],
+
+  "mounts": [
+    "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
+    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
+  ]
+}
