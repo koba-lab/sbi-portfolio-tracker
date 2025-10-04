@@ -1,4 +1,3 @@
-# FROM denoland/deno:2.5.3
 FROM mcr.microsoft.com/devcontainers/base:debian
 
 # Denoをグローバルにインストール
