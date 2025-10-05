@@ -9,10 +9,28 @@ const app = await buildApp()
 
 // Edge Functions用ハンドラー
 Deno.serve(async (req: Request) => {
-  // URLから実際のパスを取得（/functions/v1/api以降を削除）
   const url = new URL(req.url)
-  // Supabase Edge Functionsでは/functions/v1/apiがプレフィックスとして付くため、それを除去
-  const pathname = url.pathname.replace(/^\/functions\/v1\/api/, '') || '/'
+
+  // デバッグログ
+  console.log('[Edge Function] Incoming request:', {
+    url: req.url,
+    pathname: url.pathname,
+    method: req.method
+  })
+
+  // Supabase Edge Functionsでは、実際のパスは関数名の後に来る
+  // 例: https://xxx.supabase.co/functions/v1/api/health
+  //     → url.pathname = "/health" (Edge Functions内部では)
+  // ただし、関数名だけの場合は "/" となる
+  let pathname = url.pathname
+
+  // もしpathnameが"/api"で始まる場合は、それを削除
+  // （ローカルテストやプロキシ経由の場合）
+  if (pathname.startsWith('/api')) {
+    pathname = pathname.slice(4) || '/'
+  }
+
+  console.log('[Edge Function] Processed pathname:', pathname)
 
   // FastifyのリクエストハンドラーをEdge Functions用に変換
   const response = await app.inject({
