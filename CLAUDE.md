@@ -1,104 +1,148 @@
-# Claude Code 開発ガイドライン
+# CLAUDE.md
 
-このドキュメントは、Claude Codeがこのプロジェクトで従うべき振る舞いとルールを定義します。
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 基本原則
+## Project Overview
 
-### 1. 仕様書駆動開発
+SBI証券のポートフォリオデータを自動取得し、MCPサーバー経由でClaudeから参照できるようにするシステム。Clean Architecture + 段階的DDDで構築。
 
-- **実装前に必ずdocs/以下の仕様書を確認**
-- 仕様書と実装に差異がある場合は、実装前に確認を求める
-- コードは仕様書の実現手段であり、仕様書が主
+### Tech Stack
 
-### 2. 簡潔性の重視
+- **Runtime**: Deno 2.x
+- **Framework**: Fastify + TSyringe (DI)
+- **ORM**: Prisma 6.x
+- **Database**: Supabase PostgreSQL
+- **Browser Automation**: Playwright
+- **Architecture**: Clean Architecture + 段階的DDD
 
-- **過度な説明を避ける** - コードや仕様書を見れば分かることは説明しない
-- **実装詳細の羅列を避ける** - メソッド一覧などメンテナンス負担になる記載は最小限に
-- **要点のみを伝える** - ユーザーが求めていることに直接答える
+## Common Commands
 
-### 3. 段階的な複雑性導入
+### Development
+```bash
+deno task dev              # Start Fastify development server
+deno task scrape          # Run SBI scraper CLI
+```
 
-- Phase 1: 動く最小限の実装
-- Phase 2: 必要に応じた改善
-- Phase 3: 高度な最適化
-- **過度な先取り設計を避ける**
+### Testing
+```bash
+deno task test                # Run all tests (.env.test環境変数を使用)
+deno task test:watch         # Watch mode
+deno task test:unit          # Unit tests only
+deno task test:integration   # Integration tests only
+deno task test:coverage      # With coverage report
+```
 
-## 技術的ルール
+### Database
+```bash
+deno task db:generate        # Generate Prisma client
+deno task db:migrate         # Reset local DB with migrations
+deno task db:migrate:apply   # Push schema to remote DB
+deno task db:pull            # Pull schema from remote DB
+deno task db:studio          # Open Prisma Studio
+deno task db:test:setup      # Setup test DB (.env.test使用)
+```
 
-### 必ず確認するドキュメント
+### Code Quality
+```bash
+deno task lint              # Run linter
+deno task fmt               # Format code
+```
 
-1. `docs/OVERVIEW.md` - プロジェクトの目的
+## Architecture
+
+### Layer Structure (Clean Architecture)
+
+```
+Presentation → Application → Domain ← Infrastructure
+                                ↑
+                          (依存性の逆転)
+```
+
+- **Domain**: 純粋TypeScript（外部依存なし）。Entity, Repository/Service Interface
+- **Application**: UseCase実装。TSyringeでDI
+- **Infrastructure**: Prisma, Playwright等の技術的実装
+- **Presentation**: Fastify Server, MCP Server, CLI
+
+### Key Directory Structure
+
+```
+src/
+├── domain/              # ビジネスロジック（純粋TS）
+│   ├── entities/       # Portfolio, Holding, Stock等
+│   ├── repositories/   # Repository Interface
+│   └── services/       # Domain Service Interface
+├── application/
+│   └── usecases/       # SyncPortfolio, GetPortfolio等
+├── infrastructure/
+│   ├── config/         # DIContainer.ts（TSyringe設定）
+│   ├── prisma/         # schema.prisma, generated/
+│   ├── repositories/   # Prisma実装
+│   └── scraping/       # Playwright実装
+└── presentation/
+    ├── server/         # Fastify (index.ts, routes/, plugins/)
+    ├── mcp/           # MCP Server
+    └── cli/           # GitHub Actions用CLI
+```
+
+## Development Guidelines
+
+### Documentation-Driven Development
+
+**実装前に必ずdocs/以下を確認**:
+1. `docs/OVERVIEW.md` - プロジェクト目的
 2. `docs/ARCHITECTURE.md` - システム設計
 3. `docs/DECISIONS.md` - 技術選定の背景
 4. `docs/DOMAIN_MODEL.md` - ビジネスロジック
 5. `docs/INFRASTRUCTURE.md` - 技術実装詳細
 
-### 技術スタック（確定）
+仕様書と実装に差異がある場合は実装前に確認を求める。
 
-- Runtime: Deno 2.x
-- Framework: Fastify + TSyringe
-- ORM: Prisma 6.x
-- Database: Supabase PostgreSQL
-- Architecture: Clean Architecture + 段階的DDD
+### Coding Rules
 
-### コーディング規約
+- **型安全性**: `any`禁止 → `unknown`使用
+- **外部ライブラリ**: `npm:`プレフィックス必須
+- **Domain層**: 純粋TypeScript（Prisma等の依存禁止）
+- **インポート制限**: 各レイヤーの依存関係ルールを遵守（ARCHITECTURE.md参照）
 
-- `any`型禁止 → `unknown`使用
-- 外部ライブラリは`npm:`プレフィックス
-- Domain層は純粋TypeScript（外部依存なし）
-- エラーは適切に型付け
+### Progressive Complexity
 
-## Claude Codeの振る舞い
+- Phase 1: 動く最小限の実装
+- Phase 2: 必要に応じた改善
+- Phase 3: 高度な最適化
 
-### してほしいこと
+**過度な先取り設計を避ける**。Value Object、Domain Eventは将来のPhaseで導入。
 
-1. **確認を求める** - 大きな変更や仕様の解釈が必要な場合
-2. **要点を伝える** - 実装内容より「なぜ」「何を」を重視
-3. **仕様書を更新** - 重要な決定事項があれば`docs/DECISIONS.md`に追記
+### Communication Style
 
-### してほしくないこと
+- **簡潔に**: コードで分かることは説明しない
+- **要点のみ**: 「なぜ」「何を」を重視、実装詳細の羅列は避ける
+- **確認を求める**: 大きな変更や仕様解釈が必要な場合
 
-1. **冗長な説明** - 「以下のコードを実装します...」などの前置き
-2. **実装詳細の羅列** - メソッド一覧、プロパティ一覧など
-3. **仕様書への実装詳細記載** - コードで分かることは書かない
-4. **過度な先読み** - 要求されていない機能の実装
+## Important Notes
 
-## 自己改善メカニズム
+### Deno-Specific
 
-### フィードバックログ
+- 基本的に`deno task`を使用、`npx`は最小限（Supabase CLI等）
+- タスク名は実装技術を隠蔽（`db:migrate` not `supabase:migrate`）
+- ファイル生成はCLIコマンド使用（手動作成禁止）
 
-開発中の気づきや改善点を記録：
+### Testing
 
-```markdown
-<!-- FEEDBACK_LOG -->
-<!-- 日付: 内容 -->
-<!-- 例: 2024-10-05: 環境変数名はより明確に（DIRECT_URL → DATABASE_MIGRATION_URL） -->
-<!-- FEEDBACK_LOG_END -->
-```
+- テストファイルは`tests/`配下に配置（`src/`内に`.test.ts`作らない）
+- 環境変数: `.env.test`を使用（`env`コマンドで注入）
+- DB接続: `postgres-test:5432`（CI/ローカル両対応）
 
-### 定期レビュートリガー
+### Environment Variables
 
-- 10回のやり取りごとに「仕様書と実装の整合性確認が必要か？」を提案
-- Phase移行時に「次のPhaseに必要なリファクタリングはあるか？」を確認
+- Denoの`--env-file`は既存環境変数を上書きしない仕様
+- DevContainerの`env_file`が既存環境変数を設定するため注意
+- 優先順位: 既存 > --env-file > デフォルト
 
-## プロジェクト固有の注意点
+## Project-Specific Context
 
-### このプロジェクトの特徴
-
-- 個人利用前提（セルフホスト）
-- 無料枠での運用を重視
-- DDDの学習も目的の一つ
-
-### よくある質問への標準回答
-
-- Q: なぜDenoか？ → A: Supabaseとの親和性、TypeScript標準サポート
-- Q: なぜPrismaか？ → A: 型安全性、Deno対応、「イケてる技術」
-- Q: なぜFastifyか？ → A: 軽量高速、NestJSは重い
-
-## 個人設定の参照
-
-個人的な背景や好みは`.claude/CLAUDE.local.md`（gitignore対象）に記載される場合があります。
-存在する場合は参照してください。
+- **個人利用前提**: セルフホスト環境、無料枠重視
+- **学習目的**: DDDの段階的習得も目的の一つ
+- **依存性**: SBI証券サイト構造に依存（スクレイピング）
 
 ---
 
