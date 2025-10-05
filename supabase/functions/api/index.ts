@@ -2,46 +2,51 @@
  * Supabase Edge Functions エントリーポイント
  * src/presentation/server/app.ts を Edge Functions環境で実行
  */
-import { buildApp } from '../../../src/presentation/server/app.ts'
+import { buildApp } from '../../../src/presentation/server/app.ts';
 
 // Fastifyアプリケーションを構築
-const app = await buildApp()
+const app = await buildApp();
 
 // Edge Functions用ハンドラー
 Deno.serve(async (req: Request) => {
-  const url = new URL(req.url)
-
-  // デバッグログ
-  console.log('[Edge Function] Incoming request:', {
-    url: req.url,
-    pathname: url.pathname,
-    method: req.method
-  })
+  const url = new URL(req.url);
 
   // Supabase Edge Functionsでは、実際のパスは関数名の後に来る
   // 例: https://xxx.supabase.co/functions/v1/api/health
   //     → url.pathname = "/health" (Edge Functions内部では)
   // ただし、関数名だけの場合は "/" となる
-  let pathname = url.pathname
+  let pathname = url.pathname;
 
   // もしpathnameが"/api"で始まる場合は、それを削除
   // （ローカルテストやプロキシ経由の場合）
   if (pathname.startsWith('/api')) {
-    pathname = pathname.slice(4) || '/'
+    pathname = pathname.slice(4) || '/';
   }
 
-  console.log('[Edge Function] Processed pathname:', pathname)
+  // リクエストボディの処理
+  let body: string | undefined;
+  if (req.body) {
+    body = await req.text();
+  }
 
   // FastifyのリクエストハンドラーをEdge Functions用に変換
   const response = await app.inject({
-    method: req.method,
+    method: req.method as any, // HTTPMethodsの型問題を回避
     url: pathname + url.search,
     headers: Object.fromEntries(req.headers.entries()),
-    body: req.body ? await req.text() : undefined
-  })
+    body: body,
+  });
 
-  return new Response(response.body, {
+  // レスポンスヘッダーをHeadersInitに変換
+  const responseHeaders = new Headers();
+  Object.entries(response.headers).forEach(([key, value]) => {
+    if (value) {
+      responseHeaders.set(key, String(value));
+    }
+  });
+
+  return new Response(response.body || response.payload, {
     status: response.statusCode,
-    headers: response.headers as HeadersInit
-  })
-})
+    headers: responseHeaders,
+  });
+});
