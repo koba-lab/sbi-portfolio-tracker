@@ -105,8 +105,8 @@ src/
 │       └── MCPToolRegistry.ts
 │
 └── presentation/             # プレゼンテーション層（UI/API）
-    ├── fastify/
-    │   ├── server.ts        # Fastifyサーバー起動
+    ├── server/
+    │   ├── index.ts         # HTTPサーバー起動
     │   ├── plugins/
     │   │   ├── di.plugin.ts # TSyringe統合
     │   │   └── auth.plugin.ts
@@ -114,7 +114,7 @@ src/
     │       ├── portfolio.routes.ts
     │       └── health.routes.ts
     ├── mcp/
-    │   └── mcpServer.ts     # MCPサーバー実装
+    │   └── index.ts         # MCPサーバー実装
     └── cli/
         └── scraper.ts       # GitHub Actions用エントリポイント
 ```
@@ -169,7 +169,7 @@ export class SyncPortfolioUseCase {
 
 ### Fastify統合
 ```typescript
-// src/presentation/fastify/plugins/di.plugin.ts
+// src/presentation/server/plugins/di.plugin.ts
 export default fp(async (fastify) => {
   fastify.decorate("container", container);
 

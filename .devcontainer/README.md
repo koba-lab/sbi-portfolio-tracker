@@ -36,50 +36,49 @@
 
 ### 自動生成（初回起動時）
 
-Dev Container の初回起動時に、`.env.example` から `.env` が自動コピーされます。
+Dev Container の初回起動時に、以下のファイルが自動生成されます：
+- `.env` （アプリケーション用） - `.env.example` からコピー
+- `.devcontainer/.env` （DevContainer用） - `.devcontainer/.env.example` からコピー
 
-### 認証情報の設定
+### アプリケーション環境変数の設定
 
-生成された `.env` ファイルを編集してください：
+`.env` ファイルを編集：
 
-コンテナ内で編集:
-
-```
+```bash
 code .env
 ```
 
-以下のプレースホルダーを実際の値に置き換え：
+必要な値を設定：
+- `DATABASE_URL` - Supabase接続文字列（Pooler経由）
+- `DATABASE_MIGRATION_URL` - Supabase接続文字列（Migration用）
+- `SBI_USERNAME` - SBI証券のユーザー名
+- `SBI_PASSWORD` - SBI証券のパスワード
+- その他、詳細は`.env.example`参照
 
-変更前:
+### DevContainer環境変数の設定
 
-```
-SBI_USER=your_sbi_username
-SBI_PASS=your_sbi_password
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your_service_role_key
+`.devcontainer/.env` ファイルを編集：
+
+```bash
+code .devcontainer/.env
 ```
 
-変更後（実際の値）:
-
-```
-SBI_USER=actual_username
-SBI_PASS=actual_password
-SUPABASE_URL=https://xxxxx.supabase.co
-SUPABASE_KEY=eyJhbGc...actual_key
-```
+必要に応じて設定：
+- `CONTEXT7_API_KEY` - Context7 MCP APIキー
+- その他DevContainer固有の環境変数
 
 ### コンテナの再起動
 
 環境変数を反映させるため：
 
-1. `.env` を保存
+1. 各`.env`ファイルを保存
 2. コマンドパレット: `Dev Containers: Rebuild Container`
 
 ### 注意事項
 
-- ⚠️ `.env` ファイルは **Gitにコミットしない**
-- ✅ `.env.example` はテンプレートとしてコミット
-- ✅ `.gitignore` に `.env` が含まれていることを確認
+- ⚠️ `.env` と `.devcontainer/.env` は **Gitにコミットしない**
+- ✅ `*.env.example` はテンプレートとしてコミット
+- ✅ `.gitignore` で適切に除外されていることを確認
 
 ## 開発開始
 

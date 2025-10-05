@@ -44,8 +44,8 @@
   "postCreateCommand": "bash .devcontainer/setup.sh",
 
   "portsAttributes": {
-    "8000": {
-      "label": "Application",
+    "3000": {
+      "label": "Fastify API Server",
       "onAutoForward": "notify"
     }
   },
@@ -55,7 +55,10 @@
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
   },
 
-  "runArgs": ["--env-file", ".env"],
+  "runArgs": [
+    "--env-file", ".env",
+    "--env-file", ".devcontainer/.env"
+  ],
 
   "mounts": [
     "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",

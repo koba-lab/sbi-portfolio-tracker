@@ -15,7 +15,9 @@ cd sbi-portfolio-tracker
 
 # 環境変数設定
 cp .env.example .env
-# .envを編集
+# DevContainer使用時は以下も必要
+cp .devcontainer/.env.example .devcontainer/.env
+# 各.envファイルを編集
 
 # 依存関係インストール
 deno cache src/main.ts
