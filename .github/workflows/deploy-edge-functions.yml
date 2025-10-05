@@ -38,8 +38,6 @@ jobs:
             MCP_API_KEY="${{ secrets.MCP_API_KEY }}" \
             DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             DATABASE_MIGRATION_URL="${{ secrets.DATABASE_MIGRATION_URL }}" \
-            SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
-            SUPABASE_SERVICE_ROLE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
             SBI_USERNAME="${{ secrets.SBI_USERNAME }}" \
             SBI_PASSWORD="${{ secrets.SBI_PASSWORD }}" \
             --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
