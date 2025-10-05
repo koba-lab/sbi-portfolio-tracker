@@ -1,0 +1,47 @@
+name: Deploy to Supabase Edge Functions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'supabase/functions/**'
+      - 'deno.json'
+      - '.github/workflows/deploy-edge-functions.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Deploy Edge Function
+        run: |
+          supabase functions deploy api \
+            --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Set Edge Function Secrets
+        run: |
+          supabase secrets set \
+            MCP_API_KEY="${{ secrets.MCP_API_KEY }}" \
+            DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            DATABASE_MIGRATION_URL="${{ secrets.DATABASE_MIGRATION_URL }}" \
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
+            SUPABASE_SERVICE_ROLE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            SBI_USERNAME="${{ secrets.SBI_USERNAME }}" \
+            SBI_PASSWORD="${{ secrets.SBI_PASSWORD }}" \
+            --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}

@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      dockerfile: .devcontainer/Dockerfile
+      context: ..
+    volumes:
+      - ..:/workspaces/sbi-portfolio-tracker:cached
+      - claude-code-bashhistory:/commandhistory
+      - claude-code-config:/home/vscode/.claude
+    env_file:
+      - ../.env
+      - .env
+    environment:
+      CLAUDE_CONFIG_DIR: /home/vscode/.claude
+    user: vscode
+    command: sleep infinity
+
+  postgres-test:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_db
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  claude-code-bashhistory:
+  claude-code-config:
+  postgres-test-data:

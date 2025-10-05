@@ -3,13 +3,18 @@
   "tasks": {
     "dev": "deno run -A --watch src/presentation/server/index.ts",
     "scrape": "deno run -A src/presentation/cli/scraper.ts",
-    "test": "deno test -A",
+    "test": "deno test -A --env=.env.test",
+    "test:watch": "deno test -A --watch --env=.env.test",
+    "test:unit": "deno test -A --env=.env.test src/**/*.test.ts",
+    "test:integration": "deno test -A --env=.env.test tests/integration/**/*.test.ts",
+    "test:coverage": "deno test -A --env=.env.test --coverage=coverage && deno coverage coverage",
     "lint": "deno lint",
     "fmt": "deno fmt",
     "db:generate": "deno run -A npm:prisma@latest generate",
     "db:push": "deno run -A npm:prisma@latest db push",
     "db:migrate": "deno run -A npm:prisma@latest migrate dev",
-    "db:studio": "deno run -A npm:prisma@latest studio"
+    "db:studio": "deno run -A npm:prisma@latest studio",
+    "db:test:setup": "deno run -A --env=.env.test npm:prisma@latest db push --force-reset"
   },
   "imports": {
     "fastify": "npm:fastify@^4.26.0",

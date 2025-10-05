@@ -1,9 +1,8 @@
 {
   "name": "SBI Portfolio Tracker (Deno)",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".."
-  },
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/sbi-portfolio-tracker",
 
   "features": {
     "ghcr.io/devcontainers/features/node:1": {},
@@ -48,20 +47,5 @@
       "label": "Fastify API Server",
       "onAutoForward": "notify"
     }
-  },
-
-  "remoteUser": "vscode",
-  "containerEnv": {
-    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
-  },
-
-  "runArgs": [
-    "--env-file", ".env",
-    "--env-file", ".devcontainer/.env"
-  ],
-
-  "mounts": [
-    "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
-    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
-  ]
+  }
 }

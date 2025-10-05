@@ -29,20 +29,25 @@ deno task db:push
 
 ## 開発コマンド
 
-### deno.json タスク
-```json
-{
-  "tasks": {
-    "dev": "deno run -A --watch src/presentation/fastify/server.ts",
-    "scrape": "deno run -A src/presentation/cli/scraper.ts",
-    "test": "deno test -A",
-    "lint": "deno lint",
-    "fmt": "deno fmt",
-    "db:generate": "deno run -A npm:prisma generate",
-    "db:push": "deno run -A npm:prisma db push",
-    "db:migrate": "deno run -A npm:prisma migrate dev"
-  }
-}
+### 主要なタスク
+```bash
+# 開発サーバー起動
+deno task dev
+
+# テスト実行
+deno task test
+
+# DBセットアップ
+deno task db:generate  # Prismaクライアント生成
+deno task db:push      # スキーマ反映
+deno task db:migrate   # マイグレーション
+
+# テスト用DBセットアップ
+deno task db:test:setup
+
+# その他
+deno task lint         # リンター
+deno task fmt          # フォーマッター
 ```
 
 ## コーディング規約
@@ -87,13 +92,27 @@ type(scope): subject
 
 ## テスト
 
+### テスト環境
+- **ローカル**: DevContainer内のPostgreSQL（localhost:5432）
+- **CI**: GitHub ActionsのPostgreSQLサービス
+
 ### テストファイル配置
 ```
 src/
-└── domain/
-    ├── entities/
-    │   ├── Portfolio.ts
-    │   └── Portfolio.test.ts  # 同じディレクトリに配置
+├── domain/
+│   └── entities/
+│       ├── Holding.ts
+│       └── Holding.test.ts      # ユニットテスト
+└── tests/
+    └── integration/
+        └── api.test.ts          # 統合テスト
+```
+
+### セットアップ
+```bash
+# DevContainerを使用している場合、PostgreSQLは自動起動
+# テスト用DBのセットアップ
+deno task db:test:setup
 ```
 
 ### 実行方法
@@ -101,12 +120,23 @@ src/
 # 全テスト実行
 deno task test
 
-# 特定ファイルのみ
-deno test src/domain/entities/Portfolio.test.ts
+# ユニットテストのみ
+deno task test:unit
+
+# 統合テストのみ
+deno task test:integration
 
 # カバレッジ付き
-deno test --coverage
+deno task test:coverage
+
+# ファイル監視モード
+deno task test:watch
 ```
+
+### テスト用環境変数
+`.env.test`にテスト用の設定が記載されています：
+- `DATABASE_URL`: localhost:5432のPostgreSQL
+- その他: ダミー値で設定済み
 
 ## デバッグ
 
@@ -121,7 +151,7 @@ deno test --coverage
       "name": "Deno",
       "runtimeExecutable": "deno",
       "runtimeArgs": ["run", "-A", "--inspect-brk"],
-      "program": "${workspaceFolder}/src/presentation/fastify/server.ts",
+      "program": "${workspaceFolder}/src/presentation/server/index.ts",
       "attachSimplePort": 9229
     }
   ]

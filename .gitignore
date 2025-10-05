@@ -67,9 +67,13 @@ web_modules/
 
 # dotenv environment variable files
 .env
-.env.*
-!.env.example
 .env.local
+.env.development
+.env.production
+# テスト用設定はコミット対象
+!.env.test
+# Exampleファイルは必ずコミット対象
+!.env.example
 .devcontainer/.env
 !.devcontainer/.env.example
 
