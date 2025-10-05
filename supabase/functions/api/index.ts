@@ -9,10 +9,15 @@ const app = await buildApp()
 
 // Edge Functions用ハンドラー
 Deno.serve(async (req: Request) => {
+  // URLから実際のパスを取得（/functions/v1/api以降を削除）
+  const url = new URL(req.url)
+  // Supabase Edge Functionsでは/functions/v1/apiがプレフィックスとして付くため、それを除去
+  const pathname = url.pathname.replace(/^\/functions\/v1\/api/, '') || '/'
+
   // FastifyのリクエストハンドラーをEdge Functions用に変換
   const response = await app.inject({
     method: req.method,
-    url: new URL(req.url).pathname + new URL(req.url).search,
+    url: pathname + url.search,
     headers: Object.fromEntries(req.headers.entries()),
     body: req.body ? await req.text() : undefined
   })
