@@ -35,4 +35,5 @@ if [ -f "package.json" ]; then
     npm install
 fi
 
+
 echo "✨ Setup complete!"

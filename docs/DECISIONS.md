@@ -94,7 +94,31 @@
 ### 理由
 仕様書駆動開発において、ドキュメントメンテナンスの負担を最小化しつつ、重要な決定事項と理由を残すため。
 
-## 8. 将来の技術変更シナリオ
+## 8. データベースマイグレーション戦略
+
+### 決定：Supabase CLI による自動マイグレーション
+
+#### 運用フロー
+```bash
+# 1. 新しいマイグレーション作成
+supabase migration new create_portfolios_table
+
+# 2. ローカルDBに適用
+supabase db reset
+
+# 3. Prismaスキーマを同期
+deno task prisma:pull
+
+# 4. 本番環境へデプロイ（CI/CD）
+supabase db push --project-ref $SUPABASE_PROJECT_REF
+```
+
+#### Prismaの役割
+- ORMとしてのみ使用（マイグレーションはSupabase CLI）
+- `prisma db pull`で既存DBからスキーマ取得
+- `prisma generate`で型生成
+
+## 9. 将来の技術変更シナリオ
 
 ### ORM変更（Prisma → Drizzle）
 - RepositoryインターフェースはDomain層で維持

@@ -1,53 +1,23 @@
 # インフラ実装ガイド
 
-## データベーススキーマ
+## データベース管理
 
-### Supabase SQL
+### マイグレーション
 
-Supabase の SQL Editor で以下を実行：
-```sql
--- ポートフォリオテーブル作成
-create table portfolios (
-  id uuid default uuid_generate_v4() primary key,
-  user_id text not null,
-  holdings jsonb not null,
-  total_value numeric not null,
-  updated_at timestamp with time zone not null,
-  created_at timestamp with time zone default now()
-);
+Supabase CLIで管理：
 
--- インデックス作成（検索の高速化）
-create index idx_portfolios_user_id on portfolios(user_id);
-create index idx_portfolios_updated_at on portfolios(updated_at desc);
+```bash
+# 新規マイグレーション作成
+supabase migration new [migration_name]
 
--- Row Level Security（RLS）を有効化
-alter table portfolios enable row level security;
+# ローカル適用
+supabase db reset
 
--- サービスロールからのアクセスを許可
-create policy "Allow service role access"
-  on portfolios
-  for all
-  using (auth.role() = 'service_role');
+# Prismaスキーマ同期
+deno task prisma:pull
 ```
 
-### PostgreSQL（Supabase以外）
-
-生のPostgreSQLを使う場合：
-```sql
--- 上記と同じテーブル構造
--- ただし auth.role() の部分は不要
-create table portfolios (
-  id uuid default gen_random_uuid() primary key,
-  user_id text not null,
-  holdings jsonb not null,
-  total_value numeric not null,
-  updated_at timestamp with time zone not null,
-  created_at timestamp with time zone default now()
-);
-
-create index idx_portfolios_user_id on portfolios(user_id);
-create index idx_portfolios_updated_at on portfolios(updated_at desc);
-```
+マイグレーションファイルは `supabase/migrations/` に格納される。
 
 ## データマッピングパターン
 

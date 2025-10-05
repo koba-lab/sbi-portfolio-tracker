@@ -93,8 +93,8 @@ type(scope): subject
 ## テスト
 
 ### テスト環境
-- **ローカル**: DevContainer内のPostgreSQL（localhost:5432）
-- **CI**: GitHub ActionsのPostgreSQLサービス
+- **ローカル**: DevContainer内のPostgreSQL（postgres-test:5432）
+- **CI**: GitHub ActionsのPostgreSQLサービス（コンテナ内実行、postgres-test:5432）
 
 ### テストファイル配置
 ```
@@ -135,7 +135,7 @@ deno task test:watch
 
 ### テスト用環境変数
 `.env.test`にテスト用の設定が記載されています：
-- `DATABASE_URL`: localhost:5432のPostgreSQL
+- `DATABASE_URL`: postgres-test:5432のPostgreSQL
 - その他: ダミー値で設定済み
 
 ## デバッグ

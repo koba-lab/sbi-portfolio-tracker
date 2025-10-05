@@ -9,9 +9,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container:
+      image: denoland/deno:ubuntu
 
     services:
-      postgres:
+      postgres-test:
         image: postgres:15
         env:
           POSTGRES_USER: postgres
@@ -22,8 +24,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 5432:5432
 
     # CIではenvを指定せずコマンド内で.env.testを上書き
 
@@ -41,14 +41,9 @@ jobs:
             node_modules
           key: ${{ runner.os }}-deno-${{ hashFiles('deno.json', 'deno.lock') }}
 
-      - name: Setup and test
+      - name: Run tests
         run: |
-          deno install
-          deno task db:generate
-          deno task db:test:setup
-          deno task test:unit
-          deno task test:integration
-          deno task test:coverage
+          deno task test
 
       - uses: codecov/codecov-action@v3
         with:

@@ -20,6 +20,7 @@
   "homepage": "https://github.com/koba-lab/sbi-portfolio-tracker#readme",
   "devDependencies": {
     "@types/node": "^24.6.2",
-    "playwright": "^1.55.1"
+    "playwright": "^1.55.1",
+    "supabase": "^2.48.3"
   }
 }
