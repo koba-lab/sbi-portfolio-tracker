@@ -37,6 +37,7 @@
 ### 自動生成（初回起動時）
 
 Dev Container の初回起動時に、以下のファイルが自動生成されます：
+
 - `.env` （アプリケーション用） - `.env.example` からコピー
 - `.devcontainer/.env` （DevContainer用） - `.devcontainer/.env.example` からコピー
 
@@ -49,6 +50,7 @@ code .env
 ```
 
 必要な値を設定：
+
 - `DATABASE_URL` - Supabase接続文字列（Pooler経由）
 - `DATABASE_MIGRATION_URL` - Supabase接続文字列（Migration用）
 - `SBI_USERNAME` - SBI証券のユーザー名
@@ -64,6 +66,7 @@ code .devcontainer/.env
 ```
 
 必要に応じて設定：
+
 - `CONTEXT7_API_KEY` - Context7 MCP APIキー
 - その他DevContainer固有の環境変数
 

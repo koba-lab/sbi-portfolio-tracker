@@ -24,6 +24,7 @@ deno task prisma:pull
 ### Domain → Database
 
 Domain の Entity を DB レコードに変換
+
 ```typescript
 // Infrastructure Layer: SupabasePortfolioRepository.ts
 
@@ -54,6 +55,7 @@ async save(portfolio: Portfolio): Promise<void> {
 ### Database → Domain
 
 DB レコードを Domain の Entity に変換
+
 ```typescript
 // Infrastructure Layer: SupabasePortfolioRepository.ts
 
@@ -95,21 +97,23 @@ private mapToPortfolio(data: any): Portfolio {
 - Domain: `userId`, `currentPrice`, `updatedAt`
 
 **JSONB の扱い**
+
 ```typescript
 // DB に保存時
-holdings: JSON.stringify(holdingsArray)  // ❌ 不要
-holdings: holdingsArray                  // ✅ Supabaseが自動変換
+holdings: JSON.stringify(holdingsArray); // ❌ 不要
+holdings: holdingsArray; // ✅ Supabaseが自動変換
 
 // DB から取得時
-const holdings = JSON.parse(data.holdings)  // ❌ 不要
-const holdings = data.holdings              // ✅ 自動でオブジェクト
+const holdings = JSON.parse(data.holdings); // ❌ 不要
+const holdings = data.holdings; // ✅ 自動でオブジェクト
 ```
 
 **日付の扱い**
+
 ```typescript
 // DB に保存時
-updated_at: portfolio.updatedAt.toISOString()  // ✅
+updated_at: portfolio.updatedAt.toISOString(); // ✅
 
 // DB から取得時
-updatedAt: new Date(data.updated_at)  // ✅
+updatedAt: new Date(data.updated_at); // ✅
 ```

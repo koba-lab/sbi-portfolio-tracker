@@ -2,17 +2,17 @@
 
 ## 技術スタック
 
-| カテゴリ | 技術 | 選定理由 |
-|---------|------|---------|
-| Runtime | Deno 2.x | TypeScript標準サポート、セキュリティ、Supabase Edge Functions互換 |
-| Web Framework | Fastify | 高速、軽量、プラグイン豊富 |
-| DI Container | TSyringe | Microsoft製、軽量、デコレータベース、Deno対応確認済み |
-| ORM | Prisma 6.x | 型安全、マイグレーション機能、Deno対応 |
-| Database | Supabase PostgreSQL | 無料枠、リアルタイム機能、認証機能 |
-| Browser Automation | Playwright | 安定性、TypeScript対応 |
-| MCP SDK | @modelcontextprotocol/sdk | Claude連携の公式SDK |
-| Architecture | Clean Architecture + 段階的DDD | 保守性、テスタビリティ、段階的な複雑性導入 |
-| CI/CD | GitHub Actions | 無料枠、統合が容易 |
+| カテゴリ           | 技術                           | 選定理由                                                          |
+| ------------------ | ------------------------------ | ----------------------------------------------------------------- |
+| Runtime            | Deno 2.x                       | TypeScript標準サポート、セキュリティ、Supabase Edge Functions互換 |
+| Web Framework      | Fastify                        | 高速、軽量、プラグイン豊富                                        |
+| DI Container       | TSyringe                       | Microsoft製、軽量、デコレータベース、Deno対応確認済み             |
+| ORM                | Prisma 6.x                     | 型安全、マイグレーション機能、Deno対応                            |
+| Database           | Supabase PostgreSQL            | 無料枠、リアルタイム機能、認証機能                                |
+| Browser Automation | Playwright                     | 安定性、TypeScript対応                                            |
+| MCP SDK            | @modelcontextprotocol/sdk      | Claude連携の公式SDK                                               |
+| Architecture       | Clean Architecture + 段階的DDD | 保守性、テスタビリティ、段階的な複雑性導入                        |
+| CI/CD              | GitHub Actions                 | 無料枠、統合が容易                                                |
 
 ## レイヤー構成（クリーンアーキテクチャ）
 
@@ -48,18 +48,19 @@
 ## 依存関係のルール
 
 ### 依存の方向
+
 ```
 Presentation → Application → Domain ← Infrastructure
 ```
 
 ### レイヤーごとのインポート制限
 
-| レイヤー | インポート可能 | インポート禁止 |
-|---------|--------------|--------------|
-| Domain | なし（純粋なTypeScript） | すべての外部ライブラリ |
-| Application | Domain層のみ | Infrastructure層、外部ライブラリ |
-| Infrastructure | Domain層、外部ライブラリ | Application層 |
-| Presentation | すべて | - |
+| レイヤー       | インポート可能           | インポート禁止                   |
+| -------------- | ------------------------ | -------------------------------- |
+| Domain         | なし（純粋なTypeScript） | すべての外部ライブラリ           |
+| Application    | Domain層のみ             | Infrastructure層、外部ライブラリ |
+| Infrastructure | Domain層、外部ライブラリ | Application層                    |
+| Presentation   | すべて                   | -                                |
 
 ## ディレクトリ構成
 
@@ -122,23 +123,24 @@ src/
 ## 依存性注入（DI）の仕組み
 
 ### TSyringe設定
+
 ```typescript
 // src/infrastructure/config/DIContainer.ts
-import "reflect-metadata";
-import { container } from "tsyringe";
+import 'reflect-metadata';
+import { container } from 'tsyringe';
 
 export function configureDI() {
   // Singleton登録
-  container.registerSingleton("PrismaClient", PrismaClient);
+  container.registerSingleton('PrismaClient', PrismaClient);
 
   // Repository登録
-  container.register("PortfolioRepository", {
-    useClass: PrismaPortfolioRepository
+  container.register('PortfolioRepository', {
+    useClass: PrismaPortfolioRepository,
   });
 
   // Service登録
-  container.register("ScrapingService", {
-    useClass: PlaywrightSBIScraper
+  container.register('ScrapingService', {
+    useClass: PlaywrightSBIScraper,
   });
 
   return container;
@@ -146,17 +148,16 @@ export function configureDI() {
 ```
 
 ### UseCase実装
+
 ```typescript
 // src/application/usecases/portfolio/SyncPortfolioUseCase.ts
-import { injectable, inject } from "tsyringe";
+import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class SyncPortfolioUseCase {
   constructor(
-    @inject("PortfolioRepository")
-    private readonly repository: PortfolioRepository,
-    @inject("ScrapingService")
-    private readonly scraper: ScrapingService
+    @inject('PortfolioRepository') private readonly repository: PortfolioRepository,
+    @inject('ScrapingService') private readonly scraper: ScrapingService,
   ) {}
 
   async execute(credentials: Credentials): Promise<void> {
@@ -168,12 +169,13 @@ export class SyncPortfolioUseCase {
 ```
 
 ### Fastify統合
+
 ```typescript
 // src/presentation/server/plugins/di.plugin.ts
 export default fp(async (fastify) => {
-  fastify.decorate("container", container);
+  fastify.decorate('container', container);
 
-  fastify.addHook("onRequest", async (request) => {
+  fastify.addHook('onRequest', async (request) => {
     request.diContainer = container.createChildContainer();
   });
 });
@@ -182,6 +184,7 @@ export default fp(async (fastify) => {
 ## データフロー
 
 ### 1. スクレイピングフロー
+
 ```
 GitHub Actions (Cron)
     ↓
@@ -199,6 +202,7 @@ Supabase PostgreSQL
 ```
 
 ### 2. API/MCPフロー
+
 ```
 Claude / HTTPクライアント
     ↓
@@ -216,16 +220,19 @@ JSON Response
 ## 段階的DDD移行戦略
 
 ### Phase 1: シンプルなEntity（現在）
+
 - 基本的なクラスとメソッド
 - 最小限のビジネスロジック
 - Repositoryパターンの導入
 
 ### Phase 2: Value Object導入（将来）
+
 - Money, StockCode等の値オブジェクト
 - より厳密な型安全性
 - ビジネスルールの強化
 
 ### Phase 3: 完全なDDD（最終形）
+
 - Aggregate設計
 - Domain Event
 - Specification Pattern
@@ -233,11 +240,13 @@ JSON Response
 ## セキュリティ考慮事項
 
 ### 認証・認可
+
 - MCPサーバー: APIキー認証
 - Fastify API: Bearer Token認証
 - 環境変数での機密情報管理
 
 ### データ保護
+
 - SBI証券認証情報: GitHub Secrets
 - データベース接続: 環境変数
 - ログ出力: 機密情報のマスキング
@@ -245,11 +254,13 @@ JSON Response
 ## デプロイメント構成
 
 ### 開発環境
+
 ```bash
 deno task dev  # Fastify + MCP起動
 ```
 
 ### 本番環境
+
 - **GitHub Actions**: 日次スクレイピング
 - **Supabase**: データベース（無料枠）
 - **Render/Railway**: MCPサーバーホスティング（無料枠）

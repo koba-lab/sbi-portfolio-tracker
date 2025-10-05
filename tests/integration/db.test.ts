@@ -1,6 +1,6 @@
-import { assertEquals } from 'jsr:@std/assert';
+import { assertEquals } from 'jsr:@std/assert@1';
 import postgres from 'npm:postgres@3.4.4';
-import { load } from 'jsr:@std/dotenv';
+import { load } from 'jsr:@std/dotenv@0.225';
 
 // Load .env.test for testing
 await load({ envPath: '.env.test' });

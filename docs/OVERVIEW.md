@@ -26,19 +26,20 @@ Claude
 
 ## 技術スタック
 
-| カテゴリ | 技術選定 |
-|---------|---------|
-| Runtime | Deno 2.x |
-| Web Framework | Fastify |
-| DI Container | TSyringe |
-| ORM | Prisma 6.x |
-| Database | Supabase PostgreSQL |
-| Browser Automation | Playwright |
-| Architecture | Clean Architecture + DDD |
+| カテゴリ           | 技術選定                 |
+| ------------------ | ------------------------ |
+| Runtime            | Deno 2.x                 |
+| Web Framework      | Fastify                  |
+| DI Container       | TSyringe                 |
+| ORM                | Prisma 6.x               |
+| Database           | Supabase PostgreSQL      |
+| Browser Automation | Playwright               |
+| Architecture       | Clean Architecture + DDD |
 
 ## ユースケース
 
 ### AIとの連携
+
 - 「現在のポートフォリオを教えて」→ 最新情報を取得
 - 「リスク分析して」→ 集中度や損益率を分析
 - 「投資戦略を提案して」→ 過去データを基にAIが提案
@@ -47,6 +48,7 @@ Claude
 ## 環境変数
 
 ### 必須
+
 ```bash
 # Database
 DATABASE_URL=...                  # Pooler経由接続
