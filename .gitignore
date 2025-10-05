@@ -149,3 +149,8 @@ vite.config.ts.timestamp-*
 # Claude Code
 .claude/*.local.json
 CLAUDE.local.json
+.claude/CLAUDE.local.md
+CLAUDE.local.md
+
+# Prisma generated files
+src/infrastructure/prisma/generated/

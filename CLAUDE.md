@@ -1,71 +1,95 @@
-# SBI証券ポートフォリオトラッカー
+# Claude Code 開発ガイドライン
 
-このプロジェクトは、SBI証券のポートフォリオデータを自動取得し、MCPサーバー経由でClaudeから参照できるようにするツールです。
+このドキュメントは、Claude Codeがこのプロジェクトで従うべき振る舞いとルールを定義します。
 
-## 技術スタック
+## 基本原則
 
-- **Runtime**: Deno 2.x
-- **Language**: TypeScript
-- **Browser Automation**: Playwright
-- **Database**: Supabase (PostgreSQL)
-- **CI/CD**: GitHub Actions
-- **Architecture**: クリーンアーキテクチャ + DDD
+### 1. 仕様書駆動開発
+- **実装前に必ずdocs/以下の仕様書を確認**
+- 仕様書と実装に差異がある場合は、実装前に確認を求める
+- コードは仕様書の実現手段であり、仕様書が主
 
-## 重要なドキュメント
+### 2. 簡潔性の重視
+- **過度な説明を避ける** - コードや仕様書を見れば分かることは説明しない
+- **実装詳細の羅列を避ける** - メソッド一覧などメンテナンス負担になる記載は最小限に
+- **要点のみを伝える** - ユーザーが求めていることに直接答える
 
-開発前に必ず読んでください：
+### 3. 段階的な複雑性導入
+- Phase 1: 動く最小限の実装
+- Phase 2: 必要に応じた改善
+- Phase 3: 高度な最適化
+- **過度な先取り設計を避ける**
 
-1. `docs/OVERVIEW.md` - プロジェクト概要と目的
-2. `docs/ARCHITECTURE.md` - システム構成とレイヤー設計
-3. `docs/DOMAIN_MODEL.md` - ドメインモデルの詳細仕様
-4. `docs/INFRASTRUCTURE.md` - インフラ層の実装ガイド
-5. `docs/DEVELOPMENT.md` - 開発ガイドラインとコーディング規約
+## 技術的ルール
 
-## 実装順序
+### 必ず確認するドキュメント
+1. `docs/OVERVIEW.md` - プロジェクトの目的
+2. `docs/ARCHITECTURE.md` - システム設計
+3. `docs/DECISIONS.md` - 技術選定の背景
+4. `docs/DOMAIN_MODEL.md` - ビジネスロジック
+5. `docs/INFRASTRUCTURE.md` - 技術実装詳細
 
-**必ずこの順序で実装してください：**
+### 技術スタック（確定）
+- Runtime: Deno 2.x
+- Framework: Fastify + TSyringe
+- ORM: Prisma 6.x
+- Database: Supabase PostgreSQL
+- Architecture: Clean Architecture + 段階的DDD
 
-1. **Domain Layer** - Entity, ValueObject, Interface
-2. **Application Layer** - UseCase
-3. **Infrastructure Layer** - Repository実装, Scraper実装
-4. **Presentation Layer** - エントリーポイント
+### コーディング規約
+- `any`型禁止 → `unknown`使用
+- 外部ライブラリは`npm:`プレフィックス
+- Domain層は純粋TypeScript（外部依存なし）
+- エラーは適切に型付け
 
-## アーキテクチャルール
+## Claude Codeの振る舞い
 
-### 依存関係
+### してほしいこと
+1. **確認を求める** - 大きな変更や仕様の解釈が必要な場合
+2. **要点を伝える** - 実装内容より「なぜ」「何を」を重視
+3. **仕様書を更新** - 重要な決定事項があれば`docs/DECISIONS.md`に追記
 
+### してほしくないこと
+1. **冗長な説明** - 「以下のコードを実装します...」などの前置き
+2. **実装詳細の羅列** - メソッド一覧、プロパティ一覧など
+3. **仕様書への実装詳細記載** - コードで分かることは書かない
+4. **過度な先読み** - 要求されていない機能の実装
+
+## 自己改善メカニズム
+
+### フィードバックログ
+開発中の気づきや改善点を記録：
+
+```markdown
+<!-- FEEDBACK_LOG -->
+<!-- 日付: 内容 -->
+<!-- 例: 2024-10-05: 環境変数名はより明確に（DIRECT_URL → DATABASE_MIGRATION_URL） -->
+<!-- FEEDBACK_LOG_END -->
 ```
-Presentation -> Application -> Domain <- Infrastructure
-```
 
-- ✅ Infrastructure から Domain への依存: OK
-- ❌ Domain から Infrastructure への依存: 禁止
-- 依存性注入を使って疎結合を保つ
+### 定期レビュートリガー
+- 10回のやり取りごとに「仕様書と実装の整合性確認が必要か？」を提案
+- Phase移行時に「次のPhaseに必要なリファクタリングはあるか？」を確認
 
-### Domain Layer の制約
+## プロジェクト固有の注意点
 
-- 外部ライブラリのインポート禁止
-- 純粋なビジネスロジックのみ
-- インターフェースのみ定義、実装は Infrastructure
+### このプロジェクトの特徴
+- 個人利用前提（セルフホスト）
+- 無料枠での運用を重視
+- DDDの学習も目的の一つ
 
-## 禁止事項
+### よくある質問への標準回答
+- Q: なぜDenoか？ → A: Supabaseとの親和性、TypeScript標準サポート
+- Q: なぜPrismaか？ → A: 型安全性、Deno対応、「イケてる技術」
+- Q: なぜFastifyか？ → A: 軽量高速、NestJSは重い
 
-- ❌ Domain Layer に外部ライブラリをインポート
-- ❌ `any` 型の使用（`unknown` を使用）
-- ❌ 認証情報のハードコード
-- ❌ `console.log` での機密情報出力
+## 個人設定の参照
 
-## Deno 固有のルール
+個人的な背景や好みは`.claude/CLAUDE.local.md`（gitignore対象）に記載される場合があります。
+存在する場合は参照してください。
 
-```typescript
-// npm パッケージは npm: プレフィックス必須
-import { chromium } from 'npm:playwright';
-import { createClient } from 'npm:@supabase/supabase-js@2';
-```
+---
 
-```bash
-# deno.json のタスクを活用
-deno task dev
-deno task test
-deno task lint
-```
+<!-- FEEDBACK_LOG -->
+<!-- 2024-10-05: 初版作成 - 今回の会話を基に基本ルール策定 -->
+<!-- FEEDBACK_LOG_END -->
