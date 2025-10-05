@@ -1,3 +1,3 @@
 # sbi-portfolio-tracker
 
-sbi証券をmcpサーバーとして使いたい
+sbi証券のmcpサーバーが欲しかったので
