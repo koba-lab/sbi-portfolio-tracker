@@ -1,7 +1,7 @@
 /**
  * 国内株式
  */
-import { Holding } from './Holding.ts';
+import { type AssetType, Holding } from './Holding.ts';
 
 export class Stock extends Holding {
   constructor(
@@ -16,7 +16,7 @@ export class Stock extends Holding {
     super(tickerCode, name, quantity, acquisitionPrice, currentPrice);
   }
 
-  getAssetType(): string {
+  getAssetType(): AssetType {
     return 'stock';
   }
 }

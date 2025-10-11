@@ -13,7 +13,7 @@ export class PrismaPortfolioRepository implements PortfolioRepository {
     const records = portfolio.holdings.map((holding) => ({
       ticker_code: holding.tickerCode,
       name: holding.name,
-      asset_type: holding.getAssetType() as "stock" | "mutual_fund" | "foreign_stock",
+      asset_type: holding.getAssetType(),
       quantity: holding.quantity,
       acquisition_price: holding.acquisitionPrice,
       current_price: holding.currentPrice,

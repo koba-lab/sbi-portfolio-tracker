@@ -1,13 +1,14 @@
-import { assertEquals, assertExists } from "jsr:@std/assert";
-import { beforeEach, describe, it } from "jsr:@std/testing/bdd";
+import { assertEquals, assertExists } from "jsr:@std/assert@1";
+import { beforeEach, describe, it } from "jsr:@std/testing@1/bdd";
 import PrismaClientPackage from "npm:@prisma/client@6.16.3";
 const { PrismaClient } = PrismaClientPackage;
+type PrismaClientType = InstanceType<typeof PrismaClient>;
 import { PrismaPortfolioRepository } from "@/infrastructure/repositories/PrismaPortfolioRepository.ts";
 import { Portfolio } from "@/domain/entities/Portfolio.ts";
 import { Stock } from "@/domain/entities/Stock.ts";
 
 describe("PrismaPortfolioRepository", () => {
-  let prisma: PrismaClient;
+  let prisma: PrismaClientType;
   let repository: PrismaPortfolioRepository;
 
   beforeEach(async () => {

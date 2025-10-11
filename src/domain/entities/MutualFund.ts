@@ -1,7 +1,7 @@
 /**
  * 投資信託
  */
-import { Holding } from './Holding.ts';
+import { type AssetType, Holding } from './Holding.ts';
 
 export class MutualFund extends Holding {
   constructor(
@@ -17,7 +17,7 @@ export class MutualFund extends Holding {
     super(tickerCode, name, quantity, acquisitionPrice, currentPrice);
   }
 
-  getAssetType(): string {
+  getAssetType(): AssetType {
     return 'mutual_fund';
   }
 

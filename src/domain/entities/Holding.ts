@@ -1,4 +1,9 @@
 /**
+ * 資産種別の型定義
+ */
+export type AssetType = "stock" | "mutual_fund" | "foreign_stock";
+
+/**
  * 保有資産の基底クラス
  */
 export abstract class Holding {
@@ -39,5 +44,5 @@ export abstract class Holding {
   /**
    * 資産種別を取得（派生クラスで実装）
    */
-  abstract getAssetType(): string;
+  abstract getAssetType(): AssetType;
 }
