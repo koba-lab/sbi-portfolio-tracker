@@ -12,14 +12,14 @@ Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
 
   // Supabase Edge Functionsでは、実際のパスは関数名の後に来る
-  // 例: https://xxx.supabase.co/functions/v1/api/health
+  // 例: https://xxx.supabase.co/functions/v1/mcp/health
   //     → url.pathname = "/health" (Edge Functions内部では)
   // ただし、関数名だけの場合は "/" となる
   let pathname = url.pathname;
 
-  // もしpathnameが"/api"で始まる場合は、それを削除
+  // もしpathnameが"/mcp"で始まる場合は、それを削除
   // （ローカルテストやプロキシ経由の場合）
-  if (pathname.startsWith('/api')) {
+  if (pathname.startsWith('/mcp')) {
     pathname = pathname.slice(4) || '/';
   }
 
