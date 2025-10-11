@@ -9,8 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container:
-      image: denoland/deno:ubuntu
 
     services:
       postgres-test:
@@ -19,16 +17,21 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
-    # CIではenvを指定せずコマンド内で.env.testを上書き
-
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
 
       - uses: actions/cache@v3
         with:
@@ -38,8 +41,6 @@ jobs:
           key: ${{ runner.os }}-deno-${{ hashFiles('deno.json', 'deno.lock') }}
 
       - name: Run tests
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@postgres-test:5432/test_db
         run: |
           deno task test
 
