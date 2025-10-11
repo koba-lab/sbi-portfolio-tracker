@@ -148,8 +148,8 @@ export class SBIScraper implements ScrapingService {
     console.log('   認証完了後、自動的に処理が続行されます...');
 
     try {
-      // ポートフォリオページへのリダイレクトを待つ（最大5分）
-      await page.waitForURL('**/site1.sbisec.co.jp/**', { timeout: 300000 });
+      // ポートフォリオページへのリダイレクトを待つ（site1またはsite2、最大5分）
+      await page.waitForURL('**/*sbisec.co.jp/**', { timeout: 300000 });
       console.log('✅ デバイス認証完了');
     } catch (error) {
       throw new Error('デバイス認証がタイムアウトしました（5分）');
