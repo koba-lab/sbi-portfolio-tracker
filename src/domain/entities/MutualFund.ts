@@ -1,7 +1,7 @@
 /**
  * 投資信託
  */
-import { type AssetType, Holding } from './Holding.ts';
+import { type AccountType, type AssetType, Holding } from './Holding.ts';
 
 export class MutualFund extends Holding {
   constructor(
@@ -10,11 +10,11 @@ export class MutualFund extends Holding {
     quantity: number,
     acquisitionPrice: number,
     currentPrice: number,
+    accountType: AccountType,
     public readonly category?: string,
     public readonly trustFee?: number,
-    public readonly isNISA?: boolean,
   ) {
-    super(tickerCode, name, quantity, acquisitionPrice, currentPrice);
+    super(tickerCode, name, quantity, acquisitionPrice, currentPrice, accountType);
   }
 
   getAssetType(): AssetType {

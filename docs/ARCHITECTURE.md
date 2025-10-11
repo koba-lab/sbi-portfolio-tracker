@@ -101,7 +101,7 @@ src/
 │   │   ├── PrismaPortfolioRepository.ts
 │   │   └── NewsAPIRepository.ts
 │   ├── scraping/
-│   │   └── PlaywrightSBIScraper.ts
+│   │   └── SBIScraper.ts
 │   └── mcp/
 │       └── MCPToolRegistry.ts
 │
@@ -140,7 +140,7 @@ export function configureDI() {
 
   // Service登録
   container.register('ScrapingService', {
-    useClass: PlaywrightSBIScraper,
+    useClass: SBIScraper,
   });
 
   return container;
@@ -192,7 +192,7 @@ CLI Entry Point
     ↓
 SyncPortfolioUseCase ← [DI: Repository, Scraper]
     ↓
-PlaywrightSBIScraper
+SBIScraper
     ↓ スクレイピング
 SBI証券サイト
     ↓ データ取得
