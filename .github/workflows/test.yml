@@ -40,9 +40,10 @@ jobs:
             node_modules
           key: ${{ runner.os }}-deno-${{ hashFiles('deno.json', 'deno.lock') }}
 
-      - name: Generate Prisma Client
+      - name: Setup Test Database
         run: |
           deno task db:generate
+          deno task db:test:setup
 
       - name: Run tests
         run: |
