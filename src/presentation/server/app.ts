@@ -31,7 +31,7 @@ export async function buildApp() {
   });
 
   // MCP エンドポイント（スタブ実装）
-  fastify.get('/mcp/tools', () => {
+  fastify.get('/tools', () => {
     // TODO: 認証ミドルウェア追加
     // TODO: UseCase経由で実装
     return {
@@ -49,7 +49,7 @@ export async function buildApp() {
     };
   });
 
-  fastify.post('/mcp/call', (request) => {
+  fastify.post('/call', (request) => {
     // TODO: 認証ミドルウェア追加
     // TODO: UseCase経由で実装
     const { tool } = request.body as any;

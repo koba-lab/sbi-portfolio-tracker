@@ -15,13 +15,7 @@ Deno.serve(async (req: Request) => {
   // 例: https://xxx.supabase.co/functions/v1/mcp/health
   //     → url.pathname = "/health" (Edge Functions内部では)
   // ただし、関数名だけの場合は "/" となる
-  let pathname = url.pathname;
-
-  // もしpathnameが"/mcp"で始まる場合は、それを削除
-  // （ローカルテストやプロキシ経由の場合）
-  if (pathname.startsWith('/mcp')) {
-    pathname = pathname.slice(4) || '/';
-  }
+  const pathname = url.pathname;
 
   // リクエストボディの処理
   let body: string | undefined;
