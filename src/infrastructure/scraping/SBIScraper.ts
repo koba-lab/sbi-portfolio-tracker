@@ -33,7 +33,7 @@ export class SBIScraper implements ScrapingService {
 
       this.browser = await chromium.launch({
         headless,
-        slowMo: headless ? 0 : 1000, // 非headless時は1秒ごとにスローモーション
+        slowMo: headless ? 0 : 300, // 非headless時は300msごとにスローモーション
         devtools: !headless, // 非headless時はDevToolsを開く
       });
 
@@ -366,7 +366,7 @@ export class SBIScraper implements ScrapingService {
           // 投資信託の場合: 銘柄コードなし、銘柄名のみ
           if (assetType === 'mutual_fund' && text.length > 5 && !text.match(/^\d/) && !text.includes('口')) {
             name = text.trim();
-            tickerCode = 'MF-' + Math.random().toString(36).substring(2, 10); // 仮のコード
+            tickerCode = this.generateMutualFundCode(name, accountType);
             stockCellIndex = j;
             break;
           }
@@ -472,6 +472,26 @@ export class SBIScraper implements ScrapingService {
     // TODO: 海外株式ページの構造を確認して実装
     console.log('  → 海外株式の抽出は未実装');
     return [];
+  }
+
+  /**
+   * 投資信託の決定的な仮ティッカーコードを生成
+   * 銘柄名と口座種別から一意なハッシュを生成
+   */
+  private generateMutualFundCode(name: string, accountType: AccountType): string {
+    // 銘柄名と口座種別を結合してハッシュ化
+    const input = `${name}-${accountType}`;
+    let hash = 0;
+
+    for (let i = 0; i < input.length; i++) {
+      const char = input.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // 32bit整数に変換
+    }
+
+    // 正の数値に変換してBase36エンコード（8桁）
+    const code = Math.abs(hash).toString(36).substring(0, 8).toUpperCase();
+    return `MF-${code}`;
   }
 
   /**
