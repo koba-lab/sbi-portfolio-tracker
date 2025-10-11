@@ -38,6 +38,8 @@ jobs:
           key: ${{ runner.os }}-deno-${{ hashFiles('deno.json', 'deno.lock') }}
 
       - name: Run tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@postgres-test:5432/test_db
         run: |
           deno task test
 
