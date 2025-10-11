@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y \
     libcairo2 \
     libpango-1.0-0 \
     libatspi2.0-0 \
+    libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
 # Claude Codeをdevcontainerで使うための設定

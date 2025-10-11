@@ -3,6 +3,7 @@
   "tasks": {
     "dev": "deno run -A --watch src/presentation/server/index.ts",
     "scrape": "deno run -A src/presentation/cli/scraper.ts",
+    "scrape:debug": "DEBUG_SCREENSHOTS=true deno run -A src/presentation/cli/debug-scraper.ts",
     "test": "env $(grep -v '^#' .env.test | grep -v '^$' | xargs) deno test --allow-env --allow-read --allow-net --allow-ffi --no-check",
     "test:watch": "env $(grep -v '^#' .env.test | grep -v '^$' | xargs) deno test --allow-env --allow-read --allow-net --allow-ffi --no-check --watch",
     "test:unit": "env $(grep -v '^#' .env.test | grep -v '^$' | xargs) deno test --allow-env --allow-read --allow-net --allow-ffi --no-check src/**/*.test.ts",

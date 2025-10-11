@@ -35,6 +35,11 @@ if [ -f "package.json" ]; then
     npm install
 fi
 
+# Playwright ブラウザのインストール
+echo "🎭 Installing Playwright browsers..."
+npx playwright install chromium
+echo "  ✅ Playwright Chromium installed"
+
 # Supabase CLIのインストール（バイナリ版）
 echo "🔧 Installing Supabase CLI..."
 if ! command -v supabase &> /dev/null; then
