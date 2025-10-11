@@ -40,6 +40,10 @@ jobs:
             node_modules
           key: ${{ runner.os }}-deno-${{ hashFiles('deno.json', 'deno.lock') }}
 
+      - name: Install Playwright browsers
+        run: |
+          deno run -A npm:playwright-core install chromium --with-deps
+
       - name: Setup Test Database
         run: |
           deno task db:generate
