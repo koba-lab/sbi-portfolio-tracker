@@ -35,5 +35,24 @@ if [ -f "package.json" ]; then
     npm install
 fi
 
+# Supabase CLIのインストール（バイナリ版）
+echo "🔧 Installing Supabase CLI..."
+if ! command -v supabase &> /dev/null; then
+    echo "  Downloading Supabase CLI..."
+    # アーキテクチャを判定
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+        SUPABASE_URL="https://github.com/supabase/cli/releases/latest/download/supabase_linux_arm64.tar.gz"
+    else
+        SUPABASE_URL="https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz"
+    fi
+    echo "  Detected architecture: $ARCH"
+    echo "  Downloading from: $SUPABASE_URL"
+    curl -fsSL "$SUPABASE_URL" | sudo tar -xz -C /usr/local/bin
+    echo "  ✅ Supabase CLI installed"
+else
+    echo "  ✅ Supabase CLI already installed"
+fi
+supabase --version
 
 echo "✨ Setup complete!"

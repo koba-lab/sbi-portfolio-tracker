@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/base:debian
+FROM mcr.microsoft.com/devcontainers/base:bookworm
 
 # Denoをグローバルにインストール
 ARG DENO_VERSION=2.5.3
@@ -10,13 +10,13 @@ ENV PATH="$DENO_INSTALL/bin:$PATH"
 # Playwrightのシステム依存ライブラリをインストール
 # 注: playwrightパッケージ自体はpostCreateCommandでnpm installされる
 RUN apt-get update && apt-get install -y \
-    libglib2.0-0t64 \
+    libglib2.0-0 \
     libnspr4 \
     libnss3 \
     libdbus-1-3 \
-    libatk1.0-0t64 \
-    libatk-bridge2.0-0t64 \
-    libcups2t64 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
     libdrm2 \
     libxcb1 \
     libxkbcommon0 \
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
     libgbm1 \
     libcairo2 \
     libpango-1.0-0 \
-    libatspi2.0-0t64 \
+    libatspi2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Claude Codeをdevcontainerで使うための設定

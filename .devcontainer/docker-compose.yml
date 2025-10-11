@@ -17,17 +17,6 @@ services:
     user: vscode
     command: sleep infinity
 
-  postgres-test:
-    image: postgres:15
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: test_db
-    volumes:
-      - postgres-test-data:/var/lib/postgresql/data
-
 volumes:
   claude-code-bashhistory:
   claude-code-config:
-  postgres-test-data:
